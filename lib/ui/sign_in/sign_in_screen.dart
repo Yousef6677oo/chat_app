@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-import '../../validation_utils.dart';
-import '../sign_up/sign_up_sceen.dart';
+import '../../utilities/validation_utils.dart';
+import '../sign_up/sign_up_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   static String routeName = "sign_in_screen";
@@ -11,6 +12,8 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   bool hidePassword = true;
   var formKey = GlobalKey<FormState>();
   @override
@@ -52,11 +55,12 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 22,
                 ),
                 TextFormField(
-                  validator: (value){
+                  controller: emailController,
+                  validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please a Enter Email';
                     }
-                    if (ValidationUtils.isValidateEmail(value)==true) {
+                    if (ValidationUtils.isValidateEmail(value) == true) {
                       return 'Please a Enter Valid Email';
                     }
                     return null;
@@ -72,11 +76,12 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 20,
                 ),
                 TextFormField(
-                  validator: (value){
-                    if (ValidationUtils.isValidatePassword(value!)==true) {
+                  controller: passwordController,
+                  validator: (value) {
+                    if (ValidationUtils.isValidatePassword(value!) == true) {
                       return 'Please a Enter Password';
                     }
-                    if(value.length<6){
+                    if (value.length < 6) {
                       return 'password should be at least 6 characters';
                     }
                     return null;
@@ -173,8 +178,10 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  void signIn() {
-    if(formKey.currentState?.validate()==false){
+  var authService = FirebaseAuth.instance;
+
+  Future<void> signIn() async {
+    if (formKey.currentState?.validate() == false) {
       return;
     }
   }

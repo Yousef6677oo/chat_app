@@ -17,15 +17,13 @@ class _SplashScreenState extends State<SplashScreen> {
     });
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        image: DecorationImage(
-          fit: BoxFit.fill,
-          image: AssetImage("assets/splash.png")
-        )
-      ),
+          image: DecorationImage(
+              fit: BoxFit.fill, image: AssetImage("assets/splash.png"))),
     );
   }
 }

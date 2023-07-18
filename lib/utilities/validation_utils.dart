@@ -8,6 +8,7 @@ class ValidationUtils {
   }
 
   static bool isValidateName(String name) {
-    return !RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$").hasMatch(name);
+    return !RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$")
+        .hasMatch(name);
   }
 }

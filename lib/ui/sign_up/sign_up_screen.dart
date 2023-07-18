@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../validation_utils.dart';
+import '../../utilities/dialog_utils.dart';
+import '../../utilities/validation_utils.dart';
+import '../sign_in/sign_in_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   static String routeName = "sign_up_screen";
@@ -10,8 +13,12 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   bool hidePassword = true;
   var formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -43,11 +50,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: MediaQuery.of(context).size.height * 0.15,
                 ),
                 TextFormField(
-                  validator: (value){
+                  controller: nameController,
+                  validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please a Enter Your Name';
                     }
-                    if (ValidationUtils.isValidateName(value)==true) {
+                    if (ValidationUtils.isValidateName(value) == false) {
                       return 'Please a Enter Valid Name';
                     }
                     return null;
@@ -63,11 +71,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 TextFormField(
-                  validator: (value){
+                  controller: emailController,
+                  validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please a Enter Email';
                     }
-                    if (ValidationUtils.isValidateEmail(value)==true) {
+                    if (ValidationUtils.isValidateEmail(value) == true) {
                       return 'Please a Enter Valid Email';
                     }
                     return null;
@@ -83,11 +92,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 TextFormField(
-                  validator: (value){
-                    if (ValidationUtils.isValidatePassword(value!)==true) {
+                  controller: passwordController,
+                  validator: (value) {
+                    if (ValidationUtils.isValidatePassword(value!) == true) {
                       return 'Please a Enter Password';
                     }
-                    if(value.length<6){
+                    if (value.length < 6) {
                       return 'password should be at least 6 characters';
                     }
                     return null;
@@ -115,7 +125,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       )),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height*0.13,
+                  height: MediaQuery.of(context).size.height * 0.13,
                 ),
                 Card(
                   elevation: 6,
@@ -125,7 +135,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         borderRadius: BorderRadius.circular(5)),
                     child: InkWell(
                       onTap: () {
-                        signIn();
+                        signUp();
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 15.0),
@@ -165,9 +175,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void signIn() {
-    if(formKey.currentState?.validate()==false){
+  var authService = FirebaseAuth.instance;
+
+  Future<void> signUp() async {
+    if (formKey.currentState?.validate() == false) {
       return;
+    }
+
+    try {
+      DialogUtils.showLoading(context);
+      UserCredential credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      DialogUtils.hideLoading(context);
+      Navigator.pushReplacementNamed(context, SignInScreen.routeName);
+      //todo: you Should link account with id and name
+    } on FirebaseAuthException catch (exception) {
+      DialogUtils.hideLoading(context);
+      if (exception.code == 'weak-password') {
+        DialogUtils.showMyDialog(
+            message:
+                "weak password. please try another one with character length more than 6",
+            context: context);
+      } else if (exception.code == 'email-already-in-use') {
+        DialogUtils.showMyDialog(
+            message: "the email is already in use please try another one",
+            context: context);
+      }
+    } catch (e) {
+      DialogUtils.showMyDialog(title: "error", context: context);
     }
   }
 }
