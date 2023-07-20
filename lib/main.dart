@@ -1,3 +1,4 @@
+import 'package:chat/ui/home/home_screen.dart';
 import 'package:chat/ui/sign_in/sign_in_screen.dart';
 import 'package:chat/ui/sign_up/sign_up_screen.dart';
 import 'package:chat/ui/splash/splash_screen.dart';
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
       routes: {
         SplashScreen.routeName: (_) => SplashScreen(),
         SignInScreen.routeName: (_) => SignInScreen(),
-        SignUpScreen.routeName: (_) => SignUpScreen()
+        SignUpScreen.routeName: (_) => SignUpScreen(),
+        HomeScreen.routeName: (_) => HomeScreen()
       },
     );
   }

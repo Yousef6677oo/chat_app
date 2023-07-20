@@ -49,6 +49,10 @@ class DialogUtils {
                   onPressed: () {
                     Navigator.pop(context);
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        const Color(0xff3598DB), // Background color
+                  ),
                   child: const Text("ok"))
             ],
           );
