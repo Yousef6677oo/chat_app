@@ -3,8 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+
 import '../../base/base.dart';
 import '../../utilities/validation_utils.dart';
+import '../home/home_screen.dart';
 import '../sign_up/sign_up_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -234,5 +236,11 @@ class _SignInScreenState extends BaseState<SignInScreen, SignInViewModel>
       return;
     }
     viewModel.signIn(emailController.text, passwordController.text);
+  }
+
+  @override
+  void navigateToHomeScreen() {
+    print("navigateToHomeScreen: xxxxxxxxxxxxxxxxxxxxxxxxxx");
+    Navigator.pushReplacementNamed(context, HomeScreen.routeName);
   }
 }

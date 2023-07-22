@@ -2,8 +2,10 @@ import 'package:chat/ui/sign_up/sign_up_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import '../../utilities/validation_utils.dart';
+
 import '../../base/base.dart';
+import '../../utilities/validation_utils.dart';
+import '../home/home_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   static String routeName = "sign_up_screen";
@@ -226,6 +228,12 @@ class _SignUpScreenState extends BaseState<SignUpScreen, SignUpViewModel>
     if (formKey.currentState?.validate() == false) {
       return;
     }
-    viewModel.signUp(emailController.text, passwordController.text);
+    viewModel.signUp(
+        emailController.text, passwordController.text, nameController.text);
+  }
+
+  @override
+  void navigateToHomeScreen() {
+    Navigator.pushReplacementNamed(context, HomeScreen.routeName);
   }
 }

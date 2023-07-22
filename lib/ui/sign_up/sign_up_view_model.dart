@@ -1,12 +1,18 @@
+import 'package:chat/data_base/my_database.dart';
+import 'package:chat/model/my_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../base/base.dart';
 
-abstract class SignUpNavigator extends BaseNavigator {}
+import '../../base/base.dart';
+import '../../shared_data.dart';
+
+abstract class SignUpNavigator extends BaseNavigator {
+  void navigateToHomeScreen();
+}
 
 class SignUpViewModel extends BaseViewModel<SignUpNavigator> {
   var authService = FirebaseAuth.instance;
 
-  Future<void> signUp(String email, String password) async {
+  Future<void> signUp(String email, String password, String firstName) async {
     try {
       navigator?.showLoadingDialog();
       UserCredential credential =
@@ -14,8 +20,20 @@ class SignUpViewModel extends BaseViewModel<SignUpNavigator> {
         email: email,
         password: password,
       );
+      MyUser newUser = MyUser(
+        id: credential.user?.uid,
+        email: email,
+        firstName: firstName,
+      );
+      var insertedUser = await MyDataBase.insertUser(newUser);
       navigator?.hideLoadingDialog();
-      //todo: you Should link account with id and name
+      if (insertedUser != null) {
+        SharedData.user = insertedUser;
+        navigator?.navigateToHomeScreen();
+      } else {
+        navigator?.showMessageDialog(
+            message: "something went wrong, error with database");
+      }
     } on FirebaseAuthException catch (exception) {
       navigator?.hideLoadingDialog();
       if (exception.code == 'weak-password') {
